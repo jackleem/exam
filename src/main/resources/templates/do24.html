@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>do24</title>
+    <style>
+        input{
+            width:50px;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <h1 th:text="${gameName}"></h1>
+    <p th:text="${tips}"></p>
+</div>
+
+<div>
+    <form>
+        <input type="text" id="num1"/>
+        <input type="text" id="num2"/>
+        <input type="text" id="num3"/>
+        <input type="text" id="num4"/>
+    </form>
+</div>
+
+<div>
+    <button th:text="${submitBtn}" id="playBtn"></button>
+</div>
+
+<div id="resDiv">
+    <p id="res"></p>
+</div>
+
+<script th:src="@{/js/jquery-3.2.1.min.js}"></script>
+<script>
+$(document).ready(function(){
+	$("#playBtn").click(function(){
+		//alert($("#num1").val()+$("#num2").val()+$("#num3").val()+$("#num4").val());
+		$.ajax({
+			url:"/do24",
+			data:JSON.stringify({
+				num1:parseInt($("#num1").val()),
+				num2:parseInt($("#num2").val()),
+				num3:parseInt($("#num3").val()),
+				num4:parseInt($("#num4").val())
+			}),
+			type:"post",
+			dataType:"json",
+			headers:{
+			    'Content-type':'application/json;charset=utf-8'
+			},
+			success:function(data){
+
+				$("#res").empty();
+				var res = "";
+				if(data.length != 0){
+                    $.each(data, function(i, item){
+                        //alert(item);
+                        res += item+"<br/>";
+                    });
+				}else{
+				    res += "No results!";
+				}
+				$("#resDiv").html(res);
+			}
+		});
+	});
+});
+</script>
+
+</body>
+</html>
